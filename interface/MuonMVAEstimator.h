@@ -39,7 +39,8 @@ class MuonMVAEstimator{
   
     enum MVAType {
       kIDIsoRingsCombined = 0,  
-      kIsoRings
+      kIsoRings,
+      kIsoDeltaR
     };
   
     void     initialize( std::string methodName,
@@ -66,13 +67,17 @@ class MuonMVAEstimator{
                       MuonEffectiveArea::MuonEffectiveAreaTarget EATarget,
                       const reco::GsfElectronCollection &IdentifiedElectrons,
                       const reco::MuonCollection &IdentifiedMuons);
+    
+    // MVA value for the isoDeltaR MVA
+    Double_t mvaValue(const reco::Muon& mu,
+                      const reco::Vertex& vertex, 
+		      const reco::PFCandidateCollection &PFCandidates,
+		      double Rho, 
+		      MuonEffectiveArea::MuonEffectiveAreaTarget EATarget);
 #endif
-
-
-
- 
-  private:
-
+    
+    
+ private:
     std::vector<TMVA::Reader*> fTMVAReader;
     std::string                fMethodname;
     Bool_t                     fisInitialized;
@@ -80,8 +85,8 @@ class MuonMVAEstimator{
     MVAType                    fMVAType;
     Bool_t                     fUseBinnedVersion;
     UInt_t                     fNMVABins;
-
-    //spectator categorization variables
+    
+    // spectator categorization variables
     Float_t                    fMVAVar_MuEta;
     Float_t                    fMVAVar_MuPt;
     Float_t                    fMVAVar_MuTypeBits;
@@ -120,7 +125,18 @@ class MuonMVAEstimator{
     Float_t                   fMVAVar_NeutralHadronIso_DR0p2To0p3;
     Float_t                   fMVAVar_NeutralHadronIso_DR0p3To0p4;
     Float_t                   fMVAVar_NeutralHadronIso_DR0p4To0p5;
-
+    
+    
+    // isolation variables II
+    Float_t                   fMVAVar_MuRelIsoPFCharged;
+    Float_t                   fMVAVar_MuRelIsoPFNeutral;
+    Float_t                   fMVAVar_MuRelIsoPFPhotons;
+    Float_t                   fMVAVar_MuDeltaRMean;
+    Float_t                   fMVAVar_MuDeltaRSum;
+    Float_t                   fMVAVar_MuDensity;
+    Float_t                   fMVAVar_MuNPFCand;
+    Float_t                   fMVAVar_MuDZ;
+    Float_t                   fMVAVar_MuIP2d;
 
 };
 

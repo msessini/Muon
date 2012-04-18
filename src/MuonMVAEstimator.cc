@@ -2,6 +2,7 @@
 #include "../interface/MuonMVAEstimator.h"
 #include <cmath>
 #include <vector>
+
 using namespace std;
 
 #ifndef STANDALONE
@@ -24,20 +25,19 @@ using namespace reco;
 
 //--------------------------------------------------------------------------------------------------
 MuonMVAEstimator::MuonMVAEstimator() :
-fMethodname("BDTG method"),
-fisInitialized(kFALSE),
-fPrintMVADebug(kFALSE),
-fMVAType(kIDIsoRingsCombined),
-fUseBinnedVersion(kTRUE),
-fNMVABins(0)
+  fMethodname("BDTG method"),
+  fisInitialized(kFALSE),
+  fPrintMVADebug(kFALSE),
+  fMVAType(kIDIsoRingsCombined),
+  fUseBinnedVersion(kTRUE),
+  fNMVABins(0)
 {
   // Constructor.  
   fTMVAReader = std::vector<TMVA::Reader*>(0);
 }
 
 //--------------------------------------------------------------------------------------------------
-MuonMVAEstimator::~MuonMVAEstimator()
-{
+MuonMVAEstimator::~MuonMVAEstimator(){
   for (uint i=0;i<fTMVAReader.size(); ++i) {
     if (fTMVAReader[i]) delete fTMVAReader[i];
   }
@@ -45,9 +45,8 @@ MuonMVAEstimator::~MuonMVAEstimator()
 
 //--------------------------------------------------------------------------------------------------
 void MuonMVAEstimator::initialize( std::string methodName,
-                                       std::string weightsfile,
-                                       MuonMVAEstimator::MVAType type)
-{
+				   std::string weightsfile,
+				   MuonMVAEstimator::MVAType type){
   
   std::vector<std::string> tempWeightFileVector;
   tempWeightFileVector.push_back(weightsfile);
@@ -57,11 +56,11 @@ void MuonMVAEstimator::initialize( std::string methodName,
 
 //--------------------------------------------------------------------------------------------------
 void MuonMVAEstimator::initialize( std::string methodName,
-                                       MuonMVAEstimator::MVAType type,
-                                       Bool_t useBinnedVersion,
-				       std::vector<std::string> weightsfiles
-  ) {
-
+				   MuonMVAEstimator::MVAType type,
+				   Bool_t useBinnedVersion,
+				   std::vector<std::string> weightsfiles
+				   ) {
+  
   //clean up first
   for (uint i=0;i<fTMVAReader.size(); ++i) {
     if (fTMVAReader[i]) delete fTMVAReader[i];
@@ -80,7 +79,9 @@ void MuonMVAEstimator::initialize( std::string methodName,
     ExpectedNBins = 1;
   } else if (type == kIDIsoRingsCombined) {
     ExpectedNBins = 5;
-  } else if (type == kIsoRings) {
+  } else if (type == kIsoRings)  {
+    ExpectedNBins = 4;
+  } else if (type == kIsoDeltaR) {
     ExpectedNBins = 4;
   }
   fNMVABins = ExpectedNBins;
@@ -155,7 +156,17 @@ void MuonMVAEstimator::initialize( std::string methodName,
       tmpTMVAReader->AddSpectator("eta",                           &fMVAVar_MuEta);
       tmpTMVAReader->AddSpectator("pt",                            &fMVAVar_MuPt);
     }
-  
+    
+    if (type == kIsoDeltaR) {
+      tmpTMVAReader->AddVariable("DZ",                            &fMVAVar_MuDZ              );
+      tmpTMVAReader->AddVariable("IP2d",                          &fMVAVar_MuIP2d            );
+      tmpTMVAReader->AddVariable("PFCharged",                     &fMVAVar_MuRelIsoPFCharged );
+      tmpTMVAReader->AddVariable("PFNeutral",                     &fMVAVar_MuRelIsoPFNeutral );
+      tmpTMVAReader->AddVariable("PFPhotons",                     &fMVAVar_MuRelIsoPFPhotons );
+      tmpTMVAReader->AddVariable("DeltaR",                        &fMVAVar_MuDeltaRSum       );
+      tmpTMVAReader->AddVariable("DeltaRMean",                    &fMVAVar_MuDeltaRMean      );
+      tmpTMVAReader->AddVariable("Density",                       &fMVAVar_MuDensity         );
+    }
     tmpTMVAReader->BookMVA(fMethodname , weightsfiles[i]);
     std::cout << "MVABin " << i << " : MethodName = " << fMethodname 
               << " , type == " << type << " , "
@@ -164,7 +175,6 @@ void MuonMVAEstimator::initialize( std::string methodName,
     fTMVAReader.push_back(tmpTMVAReader);
   }
   std::cout << "Muon ID MVA Completed\n";
-
 }
 
 
@@ -195,10 +205,14 @@ UInt_t MuonMVAEstimator::GetMVABin( double eta, double pt, Bool_t isGlobal, Bool
         bin = 0;
       }
     }
+    if (fMVAType == MuonMVAEstimator::kIsoDeltaR){
+      if (pt <  20 && fabs(eta) <  1.479) bin = 0;
+      if (pt <  20 && fabs(eta) >= 1.479) bin = 1;
+      if (pt >= 20 && fabs(eta) <  1.479) bin = 2;
+      if (pt >= 20 && fabs(eta) >= 1.479) bin = 3;
+    }
     return bin;
 }
-
-
 
 // //--------------------------------------------------------------------------------------------------
 // Double_t MuonMVAEstimator::mvaValue(Double_t fbrem, 
@@ -307,23 +321,21 @@ UInt_t MuonMVAEstimator::GetMVABin( double eta, double pt, Bool_t isGlobal, Bool
 
 //--------------------------------------------------------------------------------------------------
 #ifndef STANDALONE
-
-
-
 Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu, 
-                                        const reco::Vertex& vertex, 
-                                        const reco::PFCandidateCollection &PFCandidates,
-                                        double Rho,
-                                        MuonEffectiveArea::MuonEffectiveAreaTarget EATarget,
-                                        const reco::GsfElectronCollection &IdentifiedElectrons,
-                                        const reco::MuonCollection &IdentifiedMuons) {
+				    const reco::Vertex& vertex, 
+				    const reco::PFCandidateCollection &PFCandidates,
+				    double Rho,
+				    MuonEffectiveArea::MuonEffectiveAreaTarget EATarget,
+				    const reco::GsfElectronCollection &IdentifiedElectrons,
+				    const reco::MuonCollection &IdentifiedMuons) {
   
   if (!fisInitialized) { 
     std::cout << "Error: MuonMVAEstimator not properly initialized.\n"; 
     return -9999;
   }
-  
 
+  if (fMVAType==2) return -9999;
+  
   TrackRef muTrk = mu.track();
   if (muTrk.isNull()) {
     muTrk = mu.standAloneMuon();
@@ -332,7 +344,7 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
     //if muon is not standalone either, then return -9999
     return -9999;
   }
-
+  
   double muNchi2 = 0.0; 
   if (mu.combinedMuon().isNonnull()) { 
     muNchi2 = mu.combinedMuon()->chi2() / (Double_t)mu.combinedMuon()->ndof(); 
@@ -348,8 +360,8 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
   // Spectators
   fMVAVar_MuEta             =  muTrk->eta();         
   fMVAVar_MuPt              =  muTrk->pt();                          
- 
- //set all input variables
+  
+  //set all input variables
   fMVAVar_MuTkNchi2              = muTrk->chi2() / (Double_t)muTrk->ndof();
   fMVAVar_MuGlobalNchi2          = muNchi2;
   fMVAVar_MuNValidHits           = mu.globalTrack().isNonnull() ? mu.globalTrack()->hitPattern().numberOfValidMuonHits() : 0;
@@ -359,11 +371,11 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
   fMVAVar_MuTrkKink              = mu.combinedQuality().trkKink;
   fMVAVar_MuSegmentCompatibility = muon::segmentCompatibility(mu, reco::Muon::SegmentAndTrackArbitration);
   fMVAVar_MuCaloCompatibility    = mu.caloCompatibility();
-  fMVAVar_MuHadEnergy      = mu.calEnergy().had;
+  fMVAVar_MuHadEnergy             = mu.calEnergy().had;
   fMVAVar_MuEmEnergy       = mu.calEnergy().em;
   fMVAVar_MuHadS9Energy    = mu.calEnergy().hadS9;
   fMVAVar_MuEmS9Energy     = mu.calEnergy().emS9;
-
+  
   //**********************************************************
   //Isolation variables
   //**********************************************************
@@ -382,7 +394,7 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
   Double_t tmpNeutralHadronIso_DR0p2To0p3  = 0;
   Double_t tmpNeutralHadronIso_DR0p3To0p4  = 0;
   Double_t tmpNeutralHadronIso_DR0p4To0p5  = 0;
-
+  
   double muonTrackZ = 0;
   if (mu.track().isNonnull()) {
     muonTrackZ = mu.track()->dz(vertex.position());
@@ -487,7 +499,7 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
   fMVAVar_NeutralHadronIso_DR0p2To0p3 = TMath::Max(TMath::Min((tmpNeutralHadronIso_DR0p2To0p3 - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralHadronIsoDR0p2To0p3, fMVAVar_MuEta, EATarget))/mu.pt(), 2.5), 0.0);
   fMVAVar_NeutralHadronIso_DR0p3To0p4 = TMath::Max(TMath::Min((tmpNeutralHadronIso_DR0p3To0p4 - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralHadronIsoDR0p3To0p4, fMVAVar_MuEta, EATarget))/mu.pt(), 2.5), 0.0);
   fMVAVar_NeutralHadronIso_DR0p4To0p5 = TMath::Max(TMath::Min((tmpNeutralHadronIso_DR0p4To0p5 - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralHadronIsoDR0p4To0p5, fMVAVar_MuEta, EATarget))/mu.pt(), 2.5), 0.0);
-  
+    
   if(fPrintMVADebug) {
     cout << fUseBinnedVersion << " -> BIN: " << fMVAVar_MuEta << " " << fMVAVar_MuPt << " "
          << "isGlobalMuon=" << mu.isGlobalMuon() << " " 
@@ -547,11 +559,114 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
 
   return mva;
 }
+// THIS METHOD TAKES THE PfNoPileUp collection
+Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu, 
+				    const reco::Vertex& vertex, 
+				    const reco::PFCandidateCollection &PFCandidates,
+				    double Rho,
+				    MuonEffectiveArea::MuonEffectiveAreaTarget EATarget){
+  
+  if (!fisInitialized) { 
+    std::cout << "Error: MuonMVAEstimator not properly initialized.\n"; 
+    return -9999;
+  }
 
+  if (fMVAType!=2) return -9999;
 
+  TrackRef muTrk = mu.track();
+  if (muTrk.isNull()) {
+    muTrk = mu.standAloneMuon();
+  }
+  if (muTrk.isNull()) {
+    //if muon is not standalone either, then return -9999
+    return -9999;
+  }
+  
+  double rho = 0;
+  if (!(isnan(float(Rho)) || isinf(float(Rho)))) rho = Rho;
+
+  Double_t tmpMuRelIsoPFCharged = 0;
+  Double_t tmpMuRelIsoPFNeutral = 0;
+  Double_t tmpMuRelIsoPFPhotons = 0;
+  Double_t tmpMuDeltaRMean = 0;
+  Double_t tmpMuDeltaRSum = 0;
+  Double_t tmpMuDensity = 0;
+  Double_t tmpMuDZ = 0;
+  Double_t tmpMuIP2d = 0;
+  Double_t tmpMuNPFCand = 0;
+  
+  if (mu.track().isNonnull()) {
+    tmpMuDZ = mu.track()->dz(vertex.position());
+    tmpMuIP2d = mu.track()->dxy(vertex.position());
+  }
+  
+  for (reco::PFCandidateCollection::const_iterator iP = PFCandidates.begin(); iP != PFCandidates.end(); ++iP) {
+    //exclude the muon itself
+    if(iP->trackRef().isNonnull() && mu.innerTrack().isNonnull() &&
+       refToPtr(iP->trackRef()) == refToPtr(mu.innerTrack())) continue;
+
+    //************************************************************
+    // New Isolation Calculations
+    //************************************************************
+    double dr = sqrt(pow(iP->eta() - mu.eta(),2) + pow(acos(cos(iP->phi() - mu.phi())),2));
+
+    if (dr > 0.5)  continue;
+    if (dr < 0.01) continue; 
+    
+    //Charged
+    if(iP->trackRef().isNonnull()) {	  	   
+      //************************************************************
+      // Veto any PFmuon, or PFEle
+      if (iP->particleId() == reco::PFCandidate::e || iP->particleId() == reco::PFCandidate::mu) continue;
+      //************************************************************
+      tmpMuRelIsoPFCharged += iP->pt(); 
+    }
+    //Gamma
+    else if (iP->particleId() == reco::PFCandidate::gamma && iP->pt() > 1.0) {
+      tmpMuRelIsoPFPhotons += iP->pt();
+    }
+    //NeutralHadron
+    else if (iP->pt() > 1.0) {
+      tmpMuRelIsoPFNeutral += iP->pt();
+    } 
+    
+    tmpMuNPFCand++;
+    tmpMuDeltaRMean += dr;
+    tmpMuDeltaRSum  += dr;
+    tmpMuDensity    += iP->pt() / dr;
+  } //loop over PF candidates
+  
+  fMVAVar_MuRelIsoPFCharged = (tmpMuRelIsoPFCharged) / mu.pt();  
+  fMVAVar_MuRelIsoPFNeutral = TMath::Max((tmpMuRelIsoPFNeutral - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralIso05, fMVAVar_MuEta, EATarget))/mu.pt(),0.0);
+  fMVAVar_MuRelIsoPFPhotons = TMath::Max((tmpMuRelIsoPFPhotons - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuGammaIso05,   fMVAVar_MuEta, EATarget))/mu.pt(),0.0);
+  fMVAVar_MuDeltaRMean      = tmpMuDeltaRMean/TMath::Max(1.0,tmpMuNPFCand);
+  fMVAVar_MuDeltaRSum       = tmpMuDeltaRSum;
+  fMVAVar_MuDensity         = tmpMuDensity;
+  fMVAVar_MuDZ              = tmpMuDZ;
+  fMVAVar_MuIP2d            = tmpMuIP2d;
+
+  if(fPrintMVADebug) {
+    cout << fUseBinnedVersion << " -> BIN: " << fMVAVar_MuEta << " " << fMVAVar_MuPt << " "
+         << "isGlobalMuon=" << mu.isGlobalMuon() << " " 
+         << "isTrackerMuon=" << mu.isTrackerMuon() << " "
+         << " : " << GetMVABin(fMVAVar_MuEta,fMVAVar_MuPt, mu.isGlobalMuon() , mu.isTrackerMuon()) << endl;
+  }
+  
+  // evaluate
+  bindVariables();
+  Double_t mva = -9999; 
+  
+  if (fUseBinnedVersion) {    
+    mva = fTMVAReader[GetMVABin(fMVAVar_MuEta,fMVAVar_MuPt, mu.isGlobalMuon() , mu.isTrackerMuon() )]->EvaluateMVA(fMethodname);
+  } else {
+    mva = fTMVAReader[0]->EvaluateMVA(fMethodname);
+  }
+  
+  return mva;
+}
 #endif
 void MuonMVAEstimator::bindVariables() {
-
+  
   // this binding is needed for variables that sometime diverge. 
   
   
