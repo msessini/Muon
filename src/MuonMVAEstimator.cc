@@ -158,12 +158,10 @@ void MuonMVAEstimator::initialize( std::string methodName,
     }
     
     if (type == kIsoDeltaR) {
-      tmpTMVAReader->AddVariable("DZ",                            &fMVAVar_MuDZ              );
-      tmpTMVAReader->AddVariable("IP2d",                          &fMVAVar_MuIP2d            );
       tmpTMVAReader->AddVariable("PFCharged",                     &fMVAVar_MuRelIsoPFCharged );
       tmpTMVAReader->AddVariable("PFNeutral",                     &fMVAVar_MuRelIsoPFNeutral );
       tmpTMVAReader->AddVariable("PFPhotons",                     &fMVAVar_MuRelIsoPFPhotons );
-      tmpTMVAReader->AddVariable("DeltaR",                        &fMVAVar_MuDeltaRSum       );
+      tmpTMVAReader->AddVariable("SumDeltaR",                     &fMVAVar_MuDeltaRSum       );
       tmpTMVAReader->AddVariable("DeltaRMean",                    &fMVAVar_MuDeltaRMean      );
       tmpTMVAReader->AddVariable("Density",                       &fMVAVar_MuDensity         );
     }
