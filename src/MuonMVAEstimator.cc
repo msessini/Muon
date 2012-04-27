@@ -559,7 +559,6 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
 }
 // THIS METHOD TAKES THE PfNoPileUp collection
 Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu, 
-				    const reco::Vertex& vertex, 
 				    const reco::PFCandidateCollection &PFCandidates,
 				    double Rho,
 				    MuonEffectiveArea::MuonEffectiveAreaTarget EATarget){
@@ -582,21 +581,26 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
   
   double rho = 0;
   if (!(isnan(float(Rho)) || isinf(float(Rho)))) rho = Rho;
-
-  Double_t tmpMuRelIsoPFCharged = 0;
-  Double_t tmpMuRelIsoPFNeutral = 0;
-  Double_t tmpMuRelIsoPFPhotons = 0;
+  
   Double_t tmpMuDeltaRMean = 0;
   Double_t tmpMuDeltaRSum = 0;
   Double_t tmpMuDensity = 0;
-  Double_t tmpMuDZ = 0;
-  Double_t tmpMuIP2d = 0;
   Double_t tmpMuNPFCand = 0;
-  
-  if (mu.track().isNonnull()) {
-    tmpMuDZ = mu.track()->dz(vertex.position());
-    tmpMuIP2d = mu.track()->dxy(vertex.position());
-  }
+  Double_t tmpChargedIso_DR0p0To0p1  = 0;
+  Double_t tmpChargedIso_DR0p1To0p2  = 0;
+  Double_t tmpChargedIso_DR0p2To0p3  = 0;
+  Double_t tmpChargedIso_DR0p3To0p4  = 0;
+  Double_t tmpChargedIso_DR0p4To0p5  = 0;
+  Double_t tmpGammaIso_DR0p0To0p1  = 0;
+  Double_t tmpGammaIso_DR0p1To0p2  = 0;
+  Double_t tmpGammaIso_DR0p2To0p3  = 0;
+  Double_t tmpGammaIso_DR0p3To0p4  = 0;
+  Double_t tmpGammaIso_DR0p4To0p5  = 0;
+  Double_t tmpNeutralHadronIso_DR0p0To0p1  = 0;
+  Double_t tmpNeutralHadronIso_DR0p1To0p2  = 0;
+  Double_t tmpNeutralHadronIso_DR0p2To0p3  = 0;
+  Double_t tmpNeutralHadronIso_DR0p3To0p4  = 0;
+  Double_t tmpNeutralHadronIso_DR0p4To0p5  = 0;
   
   for (reco::PFCandidateCollection::const_iterator iP = PFCandidates.begin(); iP != PFCandidates.end(); ++iP) {
     //exclude the muon itself
@@ -617,16 +621,29 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
       // Veto any PFmuon, or PFEle
       if (iP->particleId() == reco::PFCandidate::e || iP->particleId() == reco::PFCandidate::mu) continue;
       //************************************************************
-      tmpMuRelIsoPFCharged += iP->pt(); 
-    }
+      if (dr < 0.1) tmpChargedIso_DR0p0To0p1 += iP->pt();
+      if (dr >= 0.1 && dr < 0.2) tmpChargedIso_DR0p1To0p2 += iP->pt();
+      if (dr >= 0.2 && dr < 0.3) tmpChargedIso_DR0p2To0p3 += iP->pt();
+      if (dr >= 0.3 && dr < 0.4) tmpChargedIso_DR0p3To0p4 += iP->pt();
+      if (dr >= 0.4 && dr < 0.5) tmpChargedIso_DR0p4To0p5 += iP->pt();
+    } //pass veto	   
+    
     //Gamma
     else if (iP->particleId() == reco::PFCandidate::gamma && iP->pt() > 1.0) {
-      tmpMuRelIsoPFPhotons += iP->pt();
+      if (dr < 0.1) tmpGammaIso_DR0p0To0p1 += iP->pt();
+      if (dr >= 0.1 && dr < 0.2) tmpGammaIso_DR0p1To0p2 += iP->pt();
+      if (dr >= 0.2 && dr < 0.3) tmpGammaIso_DR0p2To0p3 += iP->pt();
+      if (dr >= 0.3 && dr < 0.4) tmpGammaIso_DR0p3To0p4 += iP->pt();
+      if (dr >= 0.4 && dr < 0.5) tmpGammaIso_DR0p4To0p5 += iP->pt();
     }
     //NeutralHadron
     else if (iP->pt() > 1.0) {
-      tmpMuRelIsoPFNeutral += iP->pt();
-    } 
+      if (dr < 0.1) tmpNeutralHadronIso_DR0p0To0p1 += iP->pt();
+      if (dr >= 0.1 && dr < 0.2) tmpNeutralHadronIso_DR0p1To0p2 += iP->pt();
+      if (dr >= 0.2 && dr < 0.3) tmpNeutralHadronIso_DR0p2To0p3 += iP->pt();
+      if (dr >= 0.3 && dr < 0.4) tmpNeutralHadronIso_DR0p3To0p4 += iP->pt();
+      if (dr >= 0.4 && dr < 0.5) tmpNeutralHadronIso_DR0p4To0p5 += iP->pt();
+    }
     
     tmpMuNPFCand++;
     tmpMuDeltaRMean += dr;
@@ -634,14 +651,30 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
     tmpMuDensity    += iP->pt() / dr;
   } //loop over PF candidates
   
-  fMVAVar_MuRelIsoPFCharged = (tmpMuRelIsoPFCharged) / mu.pt();  
-  fMVAVar_MuRelIsoPFNeutral = TMath::Max((tmpMuRelIsoPFNeutral - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralIso05, fMVAVar_MuEta, EATarget))/mu.pt(),0.0);
-  fMVAVar_MuRelIsoPFPhotons = TMath::Max((tmpMuRelIsoPFPhotons - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuGammaIso05,   fMVAVar_MuEta, EATarget))/mu.pt(),0.0);
+  fMVAVar_MuRelIsoPFCharged  = 0.;
+  fMVAVar_MuRelIsoPFCharged += TMath::Min((tmpChargedIso_DR0p0To0p1)/mu.pt(), 2.5);
+  fMVAVar_MuRelIsoPFCharged += TMath::Min((tmpChargedIso_DR0p1To0p2)/mu.pt(), 2.5);
+  fMVAVar_MuRelIsoPFCharged += TMath::Min((tmpChargedIso_DR0p2To0p3)/mu.pt(), 2.5);
+  fMVAVar_MuRelIsoPFCharged += TMath::Min((tmpChargedIso_DR0p3To0p4)/mu.pt(), 2.5);
+  fMVAVar_MuRelIsoPFCharged += TMath::Min((tmpChargedIso_DR0p4To0p5)/mu.pt(), 2.5);
+  
+  fMVAVar_MuRelIsoPFNeutral  = 0.;
+  fMVAVar_MuRelIsoPFNeutral += TMath::Max(TMath::Min((tmpNeutralHadronIso_DR0p0To0p1 - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralHadronIsoDR0p0To0p1, fMVAVar_MuEta, EATarget))/mu.pt(), 2.5), 0.0);
+  fMVAVar_MuRelIsoPFNeutral += TMath::Max(TMath::Min((tmpNeutralHadronIso_DR0p1To0p2 - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralHadronIsoDR0p1To0p2, fMVAVar_MuEta, EATarget))/mu.pt(), 2.5), 0.0);
+  fMVAVar_MuRelIsoPFNeutral += TMath::Max(TMath::Min((tmpNeutralHadronIso_DR0p2To0p3 - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralHadronIsoDR0p2To0p3, fMVAVar_MuEta, EATarget))/mu.pt(), 2.5), 0.0);
+  fMVAVar_MuRelIsoPFNeutral += TMath::Max(TMath::Min((tmpNeutralHadronIso_DR0p3To0p4 - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralHadronIsoDR0p3To0p4, fMVAVar_MuEta, EATarget))/mu.pt(), 2.5), 0.0);
+  fMVAVar_MuRelIsoPFNeutral += TMath::Max(TMath::Min((tmpNeutralHadronIso_DR0p4To0p5 - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralHadronIsoDR0p4To0p5, fMVAVar_MuEta, EATarget))/mu.pt(), 2.5), 0.0);
+
+  fMVAVar_MuRelIsoPFPhotons  = 0.;
+  fMVAVar_MuRelIsoPFPhotons += TMath::Max(TMath::Min((tmpGammaIso_DR0p0To0p1 - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuGammaIsoDR0p0To0p1, fMVAVar_MuEta, EATarget))/mu.pt(), 2.5), 0.0);
+  fMVAVar_MuRelIsoPFPhotons += TMath::Max(TMath::Min((tmpGammaIso_DR0p1To0p2 - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuGammaIsoDR0p1To0p2, fMVAVar_MuEta, EATarget))/mu.pt(), 2.5), 0.0);
+  fMVAVar_MuRelIsoPFPhotons += TMath::Max(TMath::Min((tmpGammaIso_DR0p2To0p3 - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuGammaIsoDR0p2To0p3, fMVAVar_MuEta, EATarget))/mu.pt(), 2.5), 0.0);
+  fMVAVar_MuRelIsoPFPhotons += TMath::Max(TMath::Min((tmpGammaIso_DR0p3To0p4 - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuGammaIsoDR0p3To0p4, fMVAVar_MuEta, EATarget))/mu.pt(), 2.5), 0.0);
+  fMVAVar_MuRelIsoPFPhotons += TMath::Max(TMath::Min((tmpGammaIso_DR0p4To0p5 - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuGammaIsoDR0p4To0p5, fMVAVar_MuEta, EATarget))/mu.pt(), 2.5), 0.0);
+
   fMVAVar_MuDeltaRMean      = tmpMuDeltaRMean/TMath::Max(1.0,tmpMuNPFCand);
   fMVAVar_MuDeltaRSum       = tmpMuDeltaRSum;
   fMVAVar_MuDensity         = tmpMuDensity;
-  fMVAVar_MuDZ              = tmpMuDZ;
-  fMVAVar_MuIP2d            = tmpMuIP2d;
 
   if(fPrintMVADebug) {
     cout << fUseBinnedVersion << " -> BIN: " << fMVAVar_MuEta << " " << fMVAVar_MuPt << " "

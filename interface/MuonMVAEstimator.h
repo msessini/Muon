@@ -70,7 +70,6 @@ class MuonMVAEstimator{
     
     // MVA value for the isoDeltaR MVA
     Double_t mvaValue(const reco::Muon& mu,
-                      const reco::Vertex& vertex, 
 		      const reco::PFCandidateCollection &PFCandidates,
 		      double Rho, 
 		      MuonEffectiveArea::MuonEffectiveAreaTarget EATarget);
@@ -134,9 +133,6 @@ class MuonMVAEstimator{
     Float_t                   fMVAVar_MuDeltaRMean;
     Float_t                   fMVAVar_MuDeltaRSum;
     Float_t                   fMVAVar_MuDensity;
-    Float_t                   fMVAVar_MuNPFCand;
-    Float_t                   fMVAVar_MuDZ;
-    Float_t                   fMVAVar_MuIP2d;
 
 };
 
