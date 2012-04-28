@@ -60,7 +60,8 @@ class MuonEffectiveArea{
     kMuEANoCorr,
     kMuEAData2011,
     kMuEASummer11MC,
-    kMuEAFall11MC
+    kMuEAFall11MC,
+    kMuEAData2012
   };
 
   static Double_t GetMuonEffectiveArea(MuonEffectiveAreaType type, Double_t SCEta, 
@@ -73,6 +74,26 @@ class MuonEffectiveArea{
       return 0.0;
     }
     
+    //2012 Data Effective Areas
+    else if (EffectiveAreaTarget == kMuEAData2012) {
+      if (type == kMuGammaIso04){
+	if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 )   EffectiveArea = 0.50419;
+	if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.479 ) EffectiveArea = 0.30582;
+	if (fabs(SCEta) >= 1.479 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.19765;
+	if (fabs(SCEta) >= 2.0 && fabs(SCEta) < 2.2 )   EffectiveArea = 0.28723;
+	if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 )   EffectiveArea = 0.52529;
+	if (fabs(SCEta) >= 2.3 )                        EffectiveArea = 0.48818;
+      }
+      if (type == kMuNeutralHadronIso04){
+	if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 )   EffectiveArea = 0.16580;
+	if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.479 ) EffectiveArea = 0.25904;
+	if (fabs(SCEta) >= 1.479 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.24695;
+	if (fabs(SCEta) >= 2.0 && fabs(SCEta) < 2.2 )   EffectiveArea = 0.22021;
+	if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 )   EffectiveArea = 0.34045;
+	if (fabs(SCEta) >= 2.3 )                        EffectiveArea = 0.21592;
+      }
+    }
+
     //2011 Data Effective Areas
     else if (EffectiveAreaTarget == kMuEAData2011) {
       
