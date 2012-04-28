@@ -40,7 +40,8 @@ class MuonMVAEstimator{
     enum MVAType {
       kIDIsoRingsCombined = 0,  
       kIsoRings,
-      kIsoDeltaR
+      kIsoDeltaR,
+			kID
     };
   
     void     initialize( std::string methodName,

@@ -80,9 +80,11 @@ void MuonMVAEstimator::initialize( std::string methodName,
   } else if (type == kIDIsoRingsCombined) {
     ExpectedNBins = 5;
   } else if (type == kIsoRings)  {
-    ExpectedNBins = 4;
+    ExpectedNBins = 6;
   } else if (type == kIsoDeltaR) {
     ExpectedNBins = 4;
+  } else if (type == kID) {
+    ExpectedNBins = 6;
   }
   fNMVABins = ExpectedNBins;
   
@@ -153,8 +155,7 @@ void MuonMVAEstimator::initialize( std::string methodName,
       tmpTMVAReader->AddVariable( "NeutralHadronIso_DR0p2To0p3",   &fMVAVar_NeutralHadronIso_DR0p2To0p3  );
       tmpTMVAReader->AddVariable( "NeutralHadronIso_DR0p3To0p4",   &fMVAVar_NeutralHadronIso_DR0p3To0p4  );
       tmpTMVAReader->AddVariable( "NeutralHadronIso_DR0p4To0p5",   &fMVAVar_NeutralHadronIso_DR0p4To0p5  );
-      tmpTMVAReader->AddSpectator("eta",                           &fMVAVar_MuEta);
-      tmpTMVAReader->AddSpectator("pt",                            &fMVAVar_MuPt);
+
     }
     
     if (type == kIsoDeltaR) {
@@ -165,6 +166,25 @@ void MuonMVAEstimator::initialize( std::string methodName,
       tmpTMVAReader->AddVariable("DeltaRMean",                    &fMVAVar_MuDeltaRMean      );
       tmpTMVAReader->AddVariable("Density",                       &fMVAVar_MuDensity         );
     }
+		if (type == kID) {
+      tmpTMVAReader->AddVariable( "TkNchi2",                       &fMVAVar_MuTkNchi2               );
+      if (i != 4) {
+        tmpTMVAReader->AddVariable( "GlobalNchi2",                   &fMVAVar_MuGlobalNchi2           );
+        tmpTMVAReader->AddVariable( "NValidHits",                    &fMVAVar_MuNValidHits            );
+      }
+      tmpTMVAReader->AddVariable( "NTrackerHits",                  &fMVAVar_MuNTrackerHits          );
+      tmpTMVAReader->AddVariable( "NPixelHits",                    &fMVAVar_MuNPixelHits            );
+      if (i != 5) tmpTMVAReader->AddVariable( "NMatches",           &fMVAVar_MuNMatches              );
+      tmpTMVAReader->AddVariable( "TrkKink",                       &fMVAVar_MuTrkKink               );      
+      tmpTMVAReader->AddVariable( "SegmentCompatibility",          &fMVAVar_MuSegmentCompatibility  );      
+      tmpTMVAReader->AddVariable( "CaloCompatibility",             &fMVAVar_MuCaloCompatibility     );      
+      tmpTMVAReader->AddVariable( "HadEnergy",                     &fMVAVar_MuHadEnergy       );      
+      tmpTMVAReader->AddVariable( "EmEnergy",                      &fMVAVar_MuEmEnergy        );      
+      tmpTMVAReader->AddVariable( "HadS9Energy",                   &fMVAVar_MuHadS9Energy     );      
+      tmpTMVAReader->AddVariable( "EmS9Energy",                    &fMVAVar_MuEmS9Energy      );      
+
+    }
+		
     tmpTMVAReader->BookMVA(fMethodname , weightsfiles[i]);
     std::cout << "MVABin " << i << " : MethodName = " << fMethodname 
               << " , type == " << type << " , "
@@ -183,10 +203,27 @@ UInt_t MuonMVAEstimator::GetMVABin( double eta, double pt, Bool_t isGlobal, Bool
     uint bin = 0;
 
     if (fMVAType == MuonMVAEstimator::kIsoRings) {
-      if (pt < 10 && fabs(eta) < 1.479) bin = 0;
-      if (pt < 10 && fabs(eta) >= 1.479) bin = 1;
-      if (pt >= 10 && fabs(eta) < 1.479) bin = 2;
-      if (pt >= 10 && fabs(eta) >= 1.479) bin = 3;
+			if (isGlobal && isTrackerMuon) {
+      	if (pt < 10 && fabs(eta) < 1.479) bin = 0;
+      	if (pt < 10 && fabs(eta) >= 1.479) bin = 1;
+      	if (pt >= 10 && fabs(eta) < 1.479) bin = 2;
+      	if (pt >= 10 && fabs(eta) >= 1.479) bin = 3;
+			}
+			else if (isTrackerMuon) 	bin = 4;
+			else if (isGlobal) 	bin = 5;
+			
+    }
+		
+		if (fMVAType == MuonMVAEstimator::kID) {
+			if (isGlobal && isTrackerMuon) {
+      	if (pt < 10 && fabs(eta) < 1.479) bin = 0;
+      	if (pt < 10 && fabs(eta) >= 1.479) bin = 1;
+      	if (pt >= 10 && fabs(eta) < 1.479) bin = 2;
+      	if (pt >= 10 && fabs(eta) >= 1.479) bin = 3;
+			}
+			else if (isTrackerMuon) 	bin = 4;
+			else if (isGlobal) 	bin = 5;
+			
     }
 
     if (fMVAType == MuonMVAEstimator::kIDIsoRingsCombined ) {
