@@ -41,7 +41,7 @@ class MuonMVAEstimator{
       kIDIsoRingsCombined = 0,  
       kIsoRings,
       kIsoDeltaR,
-			kID
+      kID
     };
   
     void     initialize( std::string methodName,
@@ -77,7 +77,7 @@ class MuonMVAEstimator{
 #endif
     
     
- private:
+  private:
     std::vector<TMVA::Reader*> fTMVAReader;
     std::string                fMethodname;
     Bool_t                     fisInitialized;

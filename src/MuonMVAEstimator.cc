@@ -59,7 +59,7 @@ void MuonMVAEstimator::initialize( std::string methodName,
 				   MuonMVAEstimator::MVAType type,
 				   Bool_t useBinnedVersion,
 				   std::vector<std::string> weightsfiles
-				   ) {
+  ) {
   
   //clean up first
   for (uint i=0;i<fTMVAReader.size(); ++i) {
@@ -121,8 +121,8 @@ void MuonMVAEstimator::initialize( std::string methodName,
       tmpTMVAReader->AddVariable( "NeutralHadronIso_DR0p4To0p5",   &fMVAVar_NeutralHadronIso_DR0p4To0p5  );
       tmpTMVAReader->AddVariable( "TkNchi2",                       &fMVAVar_MuTkNchi2               );
       if (i != 4) {
-        tmpTMVAReader->AddVariable( "GlobalNchi2",                   &fMVAVar_MuGlobalNchi2           );
-        tmpTMVAReader->AddVariable( "NValidHits",                    &fMVAVar_MuNValidHits            );
+        tmpTMVAReader->AddVariable( "GlobalNchi2",                 &fMVAVar_MuGlobalNchi2           );
+        tmpTMVAReader->AddVariable( "NValidHits",                  &fMVAVar_MuNValidHits            );
       }
       tmpTMVAReader->AddVariable( "NTrackerHits",                  &fMVAVar_MuNTrackerHits          );
       tmpTMVAReader->AddVariable( "NPixelHits",                    &fMVAVar_MuNPixelHits            );
@@ -159,30 +159,29 @@ void MuonMVAEstimator::initialize( std::string methodName,
     }
     
     if (type == kIsoDeltaR) {
-      tmpTMVAReader->AddVariable("PFCharged",                     &fMVAVar_MuRelIsoPFCharged );
-      tmpTMVAReader->AddVariable("PFNeutral",                     &fMVAVar_MuRelIsoPFNeutral );
-      tmpTMVAReader->AddVariable("PFPhotons",                     &fMVAVar_MuRelIsoPFPhotons );
-      tmpTMVAReader->AddVariable("SumDeltaR",                     &fMVAVar_MuDeltaRSum       );
-      tmpTMVAReader->AddVariable("DeltaRMean",                    &fMVAVar_MuDeltaRMean      );
-      tmpTMVAReader->AddVariable("Density",                       &fMVAVar_MuDensity         );
+      tmpTMVAReader->AddVariable("PFCharged",                     &fMVAVar_MuRelIsoPFCharged       );
+      tmpTMVAReader->AddVariable("PFNeutral",                     &fMVAVar_MuRelIsoPFNeutral       );
+      tmpTMVAReader->AddVariable("PFPhotons",                     &fMVAVar_MuRelIsoPFPhotons       );
+      tmpTMVAReader->AddVariable("SumDeltaR",                     &fMVAVar_MuDeltaRSum             );
+      tmpTMVAReader->AddVariable("DeltaRMean",                    &fMVAVar_MuDeltaRMean            );
+      tmpTMVAReader->AddVariable("Density",                       &fMVAVar_MuDensity               );
     }
-		if (type == kID) {
-      tmpTMVAReader->AddVariable( "TkNchi2",                       &fMVAVar_MuTkNchi2               );
+    if (type == kID) {
+      tmpTMVAReader->AddVariable( "TkNchi2",                      &fMVAVar_MuTkNchi2               );
       if (i != 4) {
-        tmpTMVAReader->AddVariable( "GlobalNchi2",                   &fMVAVar_MuGlobalNchi2           );
-        tmpTMVAReader->AddVariable( "NValidHits",                    &fMVAVar_MuNValidHits            );
+        tmpTMVAReader->AddVariable( "GlobalNchi2",                &fMVAVar_MuGlobalNchi2           );
+        tmpTMVAReader->AddVariable( "NValidHits",                 &fMVAVar_MuNValidHits            );
       }
-      tmpTMVAReader->AddVariable( "NTrackerHits",                  &fMVAVar_MuNTrackerHits          );
-      tmpTMVAReader->AddVariable( "NPixelHits",                    &fMVAVar_MuNPixelHits            );
-      if (i != 5) tmpTMVAReader->AddVariable( "NMatches",           &fMVAVar_MuNMatches              );
-      tmpTMVAReader->AddVariable( "TrkKink",                       &fMVAVar_MuTrkKink               );      
-      tmpTMVAReader->AddVariable( "SegmentCompatibility",          &fMVAVar_MuSegmentCompatibility  );      
-      tmpTMVAReader->AddVariable( "CaloCompatibility",             &fMVAVar_MuCaloCompatibility     );      
-      tmpTMVAReader->AddVariable( "HadEnergy",                     &fMVAVar_MuHadEnergy       );      
-      tmpTMVAReader->AddVariable( "EmEnergy",                      &fMVAVar_MuEmEnergy        );      
-      tmpTMVAReader->AddVariable( "HadS9Energy",                   &fMVAVar_MuHadS9Energy     );      
-      tmpTMVAReader->AddVariable( "EmS9Energy",                    &fMVAVar_MuEmS9Energy      );      
-
+      tmpTMVAReader->AddVariable( "NTrackerHits",                 &fMVAVar_MuNTrackerHits          );
+      tmpTMVAReader->AddVariable( "NPixelHits",                   &fMVAVar_MuNPixelHits            );
+      if (i != 5) tmpTMVAReader->AddVariable( "NMatches",         &fMVAVar_MuNMatches              );
+      tmpTMVAReader->AddVariable( "TrkKink",                      &fMVAVar_MuTrkKink               );      
+      tmpTMVAReader->AddVariable( "SegmentCompatibility",         &fMVAVar_MuSegmentCompatibility  );      
+      tmpTMVAReader->AddVariable( "CaloCompatibility",            &fMVAVar_MuCaloCompatibility     );      
+      tmpTMVAReader->AddVariable( "HadEnergy",                    &fMVAVar_MuHadEnergy             );      
+      tmpTMVAReader->AddVariable( "EmEnergy",                     &fMVAVar_MuEmEnergy              );      
+      tmpTMVAReader->AddVariable( "HadS9Energy",                  &fMVAVar_MuHadS9Energy           );      
+      tmpTMVAReader->AddVariable( "EmS9Energy",                   &fMVAVar_MuEmS9Energy            );      
     }
 		
     tmpTMVAReader->BookMVA(fMethodname , weightsfiles[i]);
@@ -199,159 +198,57 @@ void MuonMVAEstimator::initialize( std::string methodName,
 //--------------------------------------------------------------------------------------------------
 UInt_t MuonMVAEstimator::GetMVABin( double eta, double pt, Bool_t isGlobal, Bool_t isTrackerMuon) const {
   
-    //Default is to return the first bin
-    uint bin = 0;
+  //Default is to return the first bin
+  uint bin = 0;
 
-    if (fMVAType == MuonMVAEstimator::kIsoRings) {
-			if (isGlobal && isTrackerMuon) {
-      	if (pt < 10 && fabs(eta) < 1.479) bin = 0;
-      	if (pt < 10 && fabs(eta) >= 1.479) bin = 1;
-      	if (pt >= 10 && fabs(eta) < 1.479) bin = 2;
-      	if (pt >= 10 && fabs(eta) >= 1.479) bin = 3;
-			}
-			else if (isTrackerMuon) 	bin = 4;
-			else if (isGlobal) 	bin = 5;
-			
+  if (fMVAType == MuonMVAEstimator::kIsoRings) {
+    if (isGlobal && isTrackerMuon) {
+      if (pt < 10 && fabs(eta) < 1.479)   bin = 0;
+      if (pt < 10 && fabs(eta) >= 1.479)  bin = 1;
+      if (pt >= 10 && fabs(eta) < 1.479)  bin = 2;
+      if (pt >= 10 && fabs(eta) >= 1.479) bin = 3;
     }
+    else if (isTrackerMuon)               bin = 4;
+    else if (isGlobal) 	                  bin = 5;
+			
+  }
 		
-		if (fMVAType == MuonMVAEstimator::kID) {
-			if (isGlobal && isTrackerMuon) {
-      	if (pt < 10 && fabs(eta) < 1.479) bin = 0;
-      	if (pt < 10 && fabs(eta) >= 1.479) bin = 1;
-      	if (pt >= 10 && fabs(eta) < 1.479) bin = 2;
-      	if (pt >= 10 && fabs(eta) >= 1.479) bin = 3;
-			}
-			else if (isTrackerMuon) 	bin = 4;
-			else if (isGlobal) 	bin = 5;
+  if (fMVAType == MuonMVAEstimator::kID) {
+    if (isGlobal && isTrackerMuon) {
+      if (pt < 10 && fabs(eta) < 1.479)   bin = 0;
+      if (pt < 10 && fabs(eta) >= 1.479)  bin = 1;
+      if (pt >= 10 && fabs(eta) < 1.479)  bin = 2;
+      if (pt >= 10 && fabs(eta) >= 1.479) bin = 3;
+    }
+    else if (isTrackerMuon) 	          bin = 4;
+    else if (isGlobal) 	                  bin = 5;
 			
-    }
+  }
 
-    if (fMVAType == MuonMVAEstimator::kIDIsoRingsCombined ) {
+  if (fMVAType == MuonMVAEstimator::kIDIsoRingsCombined ) {
+    bin = 0;
+    if (isGlobal && isTrackerMuon) {
+      if (pt < 10 && fabs(eta) < 1.479)   bin = 0;
+      if (pt < 10 && fabs(eta) >= 1.479)  bin = 1;
+      if (pt >= 10 && fabs(eta) < 1.479)  bin = 2;
+      if (pt >= 10 && fabs(eta) >= 1.479) bin = 3;        
+    } 
+    else if (!isGlobal && isTrackerMuon) {
+      bin = 4;
+    }
+    else {
+      cout << "Warning: Muon is not a tracker muon. Such muons are not supported. \n";
       bin = 0;
-      if (isGlobal && isTrackerMuon) {
-        if (pt < 10 && fabs(eta) < 1.479) bin = 0;
-        if (pt < 10 && fabs(eta) >= 1.479) bin = 1;
-        if (pt >= 10 && fabs(eta) < 1.479) bin = 2;
-        if (pt >= 10 && fabs(eta) >= 1.479) bin = 3;        
-      } else if (!isGlobal && isTrackerMuon) {
-        bin = 4;
-      } else {
-        cout << "Warning: Muon is not a tracker muon. Such muons are not supported. \n";
-        bin = 0;
-      }
     }
-    if (fMVAType == MuonMVAEstimator::kIsoDeltaR){
-      if (pt <  20 && fabs(eta) <  1.479) bin = 0;
-      if (pt <  20 && fabs(eta) >= 1.479) bin = 1;
-      if (pt >= 20 && fabs(eta) <  1.479) bin = 2;
-      if (pt >= 20 && fabs(eta) >= 1.479) bin = 3;
-    }
-    return bin;
+  }
+  if (fMVAType == MuonMVAEstimator::kIsoDeltaR){
+    if (pt <  20 && fabs(eta) <  1.479) bin = 0;
+    if (pt <  20 && fabs(eta) >= 1.479) bin = 1;
+    if (pt >= 20 && fabs(eta) <  1.479) bin = 2;
+    if (pt >= 20 && fabs(eta) >= 1.479) bin = 3;
+  }
+  return bin;
 }
-
-// //--------------------------------------------------------------------------------------------------
-// Double_t MuonMVAEstimator::mvaValue(Double_t fbrem, 
-// 					Double_t kfchi2,
-// 					Int_t    kfhits,
-// 					Double_t gsfchi2,
-// 					Double_t deta,
-// 					Double_t dphi,
-// 					Double_t detacalo,
-// 					//Double_t dphicalo,
-// 					Double_t see,
-// 					Double_t spp,
-// 					Double_t etawidth,
-// 					Double_t phiwidth,
-// 					Double_t e1x5e5x5,
-// 					Double_t R9,
-// 					//Int_t    nbrems,
-// 					Double_t HoE,
-// 					Double_t EoP,
-// 					Double_t IoEmIoP,
-// 					Double_t eleEoPout,
-// 					Double_t PreShowerOverRaw,
-// 					//Double_t EoPout,
-// 					Double_t eta,
-// 					Double_t pt,
-// 					Bool_t printDebug) {
-  
-//   if (!fisInitialized) { 
-//     std::cout << "Error: MuonMVAEstimator not properly initialized.\n"; 
-//     return -9999;
-//   }
-
-//   fMVAVar_fbrem           = fbrem; 
-//   fMVAVar_kfchi2          = kfchi2;
-//   fMVAVar_kfhits          = float(kfhits);   // BTD does not support int variables
-//   fMVAVar_gsfchi2         = gsfchi2;
-
-//   fMVAVar_deta            = deta;
-//   fMVAVar_dphi            = dphi;
-//   fMVAVar_detacalo        = detacalo;
-//   // fMVAVar_dphicalo        = dphicalo;
-
-
-//   fMVAVar_see             = see;
-//   fMVAVar_spp             = spp;
-//   fMVAVar_etawidth        = etawidth;
-//   fMVAVar_phiwidth        = phiwidth;
-//   fMVAVar_e1x5e5x5        = e1x5e5x5;
-//   fMVAVar_R9              = R9;
-//   //fMVAVar_nbrems          = float(nbrems);   // BTD does not support int variables
-
-
-//   fMVAVar_HoE             = HoE;
-//   fMVAVar_EoP             = EoP;
-//   fMVAVar_IoEmIoP         = IoEmIoP;
-//   fMVAVar_eleEoPout       = eleEoPout;
-//   fMVAVar_PreShowerOverRaw= PreShowerOverRaw;
-//   //fMVAVar_EoPout          = EoPout; 
-
-//   fMVAVar_eta             = eta;
-//   fMVAVar_pt              = pt;
-
-
-//   bindVariables();
-//   Double_t mva = -9999;  
-//   if (fUseBinnedVersion) {
-//     mva = fTMVAReader[GetMVABin(fMVAVar_eta,fMVAVar_pt)]->EvaluateMVA(fMethodname);
-//   } else {
-//     mva = fTMVAReader[0]->EvaluateMVA(fMethodname);
-//   }
-
-
-
-//   if(printDebug) {
-//     cout << " *** Inside the class fMethodname " << fMethodname << endl;
-//     cout << " fbrem " <<  fMVAVar_fbrem  
-//       	 << " kfchi2 " << fMVAVar_kfchi2  
-// 	 << " mykfhits " << fMVAVar_kfhits  
-// 	 << " gsfchi2 " << fMVAVar_gsfchi2  
-// 	 << " deta " <<  fMVAVar_deta  
-// 	 << " dphi " << fMVAVar_dphi  
-//       	 << " detacalo " << fMVAVar_detacalo  
-//       // << " dphicalo " << fMVAVar_dphicalo  
-// 	 << " see " << fMVAVar_see  
-// 	 << " spp " << fMVAVar_spp  
-// 	 << " etawidth " << fMVAVar_etawidth  
-// 	 << " phiwidth " << fMVAVar_phiwidth  
-// 	 << " e1x5e5x5 " << fMVAVar_e1x5e5x5  
-// 	 << " R9 " << fMVAVar_R9  
-//       // << " mynbrems " << fMVAVar_nbrems  
-// 	 << " HoE " << fMVAVar_HoE  
-// 	 << " EoP " << fMVAVar_EoP  
-// 	 << " IoEmIoP " << fMVAVar_IoEmIoP  
-// 	 << " eleEoPout " << fMVAVar_eleEoPout  
-//       //<< " EoPout " << fMVAVar_EoPout  
-// 	 << " PreShowerOverRaw " << fMVAVar_PreShowerOverRaw  
-// 	 << " eta " << fMVAVar_eta  
-// 	 << " pt " << fMVAVar_pt << endl;
-//     cout << " ### MVA " << mva << endl;
-//   }
-
-
-//   return mva;
-// }
 
 
 //--------------------------------------------------------------------------------------------------
@@ -478,43 +375,43 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
 	if(iP->trackRef().isNonnull() && tmpDR < 0.01) IsLeptonFootprint = kTRUE;
       }
 
-     if (!IsLeptonFootprint) {
+      if (!IsLeptonFootprint) {
 	Bool_t passVeto = kTRUE;
 	//Charged
-	 if(iP->trackRef().isNonnull()) {	  	   
-	   if (!(fabs(iP->trackRef()->dz(vertex.position()) - muonTrackZ) < 0.2)) passVeto = kFALSE;
-	   //************************************************************
-	   // Veto any PFmuon, or PFEle
-	   if (iP->particleId() == reco::PFCandidate::e || iP->particleId() == reco::PFCandidate::mu) passVeto = kFALSE;
-	   //************************************************************
-	   //************************************************************
-	   // Footprint Veto
-	   if (fabs(fMVAVar_MuEta) > 1.479 && dr < 0.01) passVeto = kFALSE;
-	   //************************************************************
-	   if (passVeto) {
-	     if (dr < 0.1) tmpChargedIso_DR0p0To0p1 += iP->pt();
-	     if (dr >= 0.1 && dr < 0.2) tmpChargedIso_DR0p1To0p2 += iP->pt();
-	     if (dr >= 0.2 && dr < 0.3) tmpChargedIso_DR0p2To0p3 += iP->pt();
-	     if (dr >= 0.3 && dr < 0.4) tmpChargedIso_DR0p3To0p4 += iP->pt();
-	     if (dr >= 0.4 && dr < 0.5) tmpChargedIso_DR0p4To0p5 += iP->pt();
-	   } //pass veto	   
-	 }
-	 //Gamma
-	 else if (iP->particleId() == reco::PFCandidate::gamma) {
-	     if (dr < 0.1) tmpGammaIso_DR0p0To0p1 += iP->pt();
-	     if (dr >= 0.1 && dr < 0.2) tmpGammaIso_DR0p1To0p2 += iP->pt();
-	     if (dr >= 0.2 && dr < 0.3) tmpGammaIso_DR0p2To0p3 += iP->pt();
-	     if (dr >= 0.3 && dr < 0.4) tmpGammaIso_DR0p3To0p4 += iP->pt();
-	     if (dr >= 0.4 && dr < 0.5) tmpGammaIso_DR0p4To0p5 += iP->pt();
-	 }
-	 //NeutralHadron
-	 else {
-           if (dr < 0.1) tmpNeutralHadronIso_DR0p0To0p1 += iP->pt();
-           if (dr >= 0.1 && dr < 0.2) tmpNeutralHadronIso_DR0p1To0p2 += iP->pt();
-           if (dr >= 0.2 && dr < 0.3) tmpNeutralHadronIso_DR0p2To0p3 += iP->pt();
-           if (dr >= 0.3 && dr < 0.4) tmpNeutralHadronIso_DR0p3To0p4 += iP->pt();
-           if (dr >= 0.4 && dr < 0.5) tmpNeutralHadronIso_DR0p4To0p5 += iP->pt();
-	 }
+        if(iP->trackRef().isNonnull()) {	  	   
+          if (!(fabs(iP->trackRef()->dz(vertex.position()) - muonTrackZ) < 0.2)) passVeto = kFALSE;
+          //************************************************************
+          // Veto any PFmuon, or PFEle
+          if (iP->particleId() == reco::PFCandidate::e || iP->particleId() == reco::PFCandidate::mu) passVeto = kFALSE;
+          //************************************************************
+          //************************************************************
+          // Footprint Veto
+          if (fabs(fMVAVar_MuEta) > 1.479 && dr < 0.01) passVeto = kFALSE;
+          //************************************************************
+          if (passVeto) {
+            if (dr < 0.1) tmpChargedIso_DR0p0To0p1 += iP->pt();
+            if (dr >= 0.1 && dr < 0.2) tmpChargedIso_DR0p1To0p2 += iP->pt();
+            if (dr >= 0.2 && dr < 0.3) tmpChargedIso_DR0p2To0p3 += iP->pt();
+            if (dr >= 0.3 && dr < 0.4) tmpChargedIso_DR0p3To0p4 += iP->pt();
+            if (dr >= 0.4 && dr < 0.5) tmpChargedIso_DR0p4To0p5 += iP->pt();
+          } //pass veto	   
+        }
+        //Gamma
+        else if (iP->particleId() == reco::PFCandidate::gamma) {
+          if (dr < 0.1) tmpGammaIso_DR0p0To0p1 += iP->pt();
+          if (dr >= 0.1 && dr < 0.2) tmpGammaIso_DR0p1To0p2 += iP->pt();
+          if (dr >= 0.2 && dr < 0.3) tmpGammaIso_DR0p2To0p3 += iP->pt();
+          if (dr >= 0.3 && dr < 0.4) tmpGammaIso_DR0p3To0p4 += iP->pt();
+          if (dr >= 0.4 && dr < 0.5) tmpGammaIso_DR0p4To0p5 += iP->pt();
+        }
+        //NeutralHadron
+        else {
+          if (dr < 0.1) tmpNeutralHadronIso_DR0p0To0p1 += iP->pt();
+          if (dr >= 0.1 && dr < 0.2) tmpNeutralHadronIso_DR0p1To0p2 += iP->pt();
+          if (dr >= 0.2 && dr < 0.3) tmpNeutralHadronIso_DR0p2To0p3 += iP->pt();
+          if (dr >= 0.3 && dr < 0.4) tmpNeutralHadronIso_DR0p3To0p4 += iP->pt();
+          if (dr >= 0.4 && dr < 0.5) tmpNeutralHadronIso_DR0p4To0p5 += iP->pt();
+        }
       } //not lepton footprint
     } //in 1.0 dr cone
   } //loop over PF candidates
