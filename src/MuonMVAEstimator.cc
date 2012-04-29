@@ -629,6 +629,76 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
   
   return mva;
 }
+
+Double_t MuonMVAEstimator::mvaValue_ID(const reco::Muon& mu, 
+				    const reco::Vertex& vertex) {
+  
+  if (!fisInitialized) { 
+    std::cout << "Error: MuonMVAEstimator not properly initialized.\n"; 
+    return -9999;
+  }
+
+  if (fMVAType!=kID) {
+		std::cout << "Error: id evaluation function called for a non-ID MVA\n";
+		return -9999;
+	}	
+  
+  TrackRef muTrk = mu.track();
+  if (muTrk.isNull()) {
+    muTrk = mu.standAloneMuon();
+  }
+  if (muTrk.isNull()) {
+    //if muon is not standalone either, then return -9999
+    return -9999;
+  }
+  
+  double muNchi2 = 0.0; 
+  if (mu.combinedMuon().isNonnull()) { 
+    muNchi2 = mu.combinedMuon()->chi2() / (Double_t)mu.combinedMuon()->ndof(); 
+  } else if (mu.standAloneMuon().isNonnull()) { 
+    muNchi2 = mu.standAloneMuon()->chi2() / (Double_t)mu.standAloneMuon()->ndof(); 
+  } else if (mu.track().isNonnull()) { 
+    muNchi2 = mu.track()->chi2() / (Double_t)mu.track()->ndof(); 
+  }
+
+  // Spectators
+  fMVAVar_MuEta             =  muTrk->eta();         
+  fMVAVar_MuPt              =  muTrk->pt();                          
+  
+  //set all input variables
+  fMVAVar_MuTkNchi2              = muTrk->chi2() / (Double_t)muTrk->ndof();
+  fMVAVar_MuGlobalNchi2          = muNchi2;
+  fMVAVar_MuNValidHits           = mu.globalTrack().isNonnull() ? mu.globalTrack()->hitPattern().numberOfValidMuonHits() : 0;
+  fMVAVar_MuNTrackerHits         = muTrk->numberOfValidHits();
+  fMVAVar_MuNPixelHits           = muTrk->hitPattern().numberOfValidPixelHits();
+  fMVAVar_MuNMatches             = mu.numberOfMatches();
+  fMVAVar_MuTrkKink              = mu.combinedQuality().trkKink;
+  fMVAVar_MuSegmentCompatibility = muon::segmentCompatibility(mu, reco::Muon::SegmentAndTrackArbitration);
+  fMVAVar_MuCaloCompatibility    = mu.caloCompatibility();
+  fMVAVar_MuHadEnergy             = mu.calEnergy().had;
+  fMVAVar_MuEmEnergy       = mu.calEnergy().em;
+  fMVAVar_MuHadS9Energy    = mu.calEnergy().hadS9;
+  fMVAVar_MuEmS9Energy     = mu.calEnergy().emS9;
+  
+
+  if(fPrintMVADebug) {
+    cout << fUseBinnedVersion << " -> BIN: " << fMVAVar_MuEta << " " << fMVAVar_MuPt << " "
+         << "isGlobalMuon=" << mu.isGlobalMuon() << " " 
+         << "isTrackerMuon=" << mu.isTrackerMuon() << " "
+         << " : " << GetMVABin(fMVAVar_MuEta,fMVAVar_MuPt, mu.isGlobalMuon() , mu.isTrackerMuon()) << endl;
+  }
+
+  Double_t mva = -9999; 
+   
+  if (fUseBinnedVersion) {    
+    mva = fTMVAReader[GetMVABin(fMVAVar_MuEta,fMVAVar_MuPt, mu.isGlobalMuon() , mu.isTrackerMuon() )]->EvaluateMVA(fMethodname);
+  } else {
+    mva = fTMVAReader[0]->EvaluateMVA(fMethodname);
+  }
+
+  return mva;
+}
+
 #endif
 void MuonMVAEstimator::bindVariables() {
   

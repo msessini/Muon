@@ -74,6 +74,11 @@ class MuonMVAEstimator{
 		      const reco::PFCandidateCollection &PFCandidates,
 		      double Rho, 
 		      MuonEffectiveArea::MuonEffectiveAreaTarget EATarget);
+					
+		// MVA value for the ID MVA
+    Double_t mvaValue_ID(const reco::Muon& mu,
+		      const reco::Vertex& vertex);			
+					
 #endif
     
     
