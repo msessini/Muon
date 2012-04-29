@@ -709,6 +709,81 @@ void MuonMVAEstimator::bindVariables() {
 }
 
 
+Double_t MuonMVAEstimator::isoMvaValue(Double_t Pt,
+                                       Double_t Eta,
+                                       Bool_t isGlobalMuon,
+                                       Bool_t isTrackerMuon,
+                                       Double_t Rho,
+                                       MuonEffectiveArea::MuonEffectiveAreaTarget EATarget,
+                                       Double_t ChargedIso_DR0p0To0p1,
+                                       Double_t ChargedIso_DR0p1To0p2,
+                                       Double_t ChargedIso_DR0p2To0p3,
+                                       Double_t ChargedIso_DR0p3To0p4,
+                                       Double_t ChargedIso_DR0p4To0p5,
+                                       Double_t GammaIso_DR0p0To0p1,
+                                       Double_t GammaIso_DR0p1To0p2,
+                                       Double_t GammaIso_DR0p2To0p3,
+                                       Double_t GammaIso_DR0p3To0p4,
+                                       Double_t GammaIso_DR0p4To0p5,
+                                       Double_t NeutralHadronIso_DR0p0To0p1,
+                                       Double_t NeutralHadronIso_DR0p1To0p2,
+                                       Double_t NeutralHadronIso_DR0p2To0p3,
+                                       Double_t NeutralHadronIso_DR0p3To0p4,
+                                       Double_t NeutralHadronIso_DR0p4To0p5,
+                                       Bool_t printDebug) {
+
+  if (!fisInitialized) { 
+    std::cout << "Error: MuonMVAEstimator not properly initialized.\n"; 
+    return -9999;
+  }
+
+  fMVAVar_ChargedIso_DR0p0To0p1   = TMath::Min((ChargedIso_DR0p0To0p1)/Pt, 2.5);
+  fMVAVar_ChargedIso_DR0p1To0p2   = TMath::Min((ChargedIso_DR0p1To0p2)/Pt, 2.5);
+  fMVAVar_ChargedIso_DR0p2To0p3 = TMath::Min((ChargedIso_DR0p2To0p3)/Pt, 2.5);
+  fMVAVar_ChargedIso_DR0p3To0p4 = TMath::Min((ChargedIso_DR0p3To0p4)/Pt, 2.5);
+  fMVAVar_ChargedIso_DR0p4To0p5 = TMath::Min((ChargedIso_DR0p4To0p5)/Pt, 2.5); 
+  fMVAVar_GammaIso_DR0p0To0p1 = TMath::Max(TMath::Min((GammaIso_DR0p0To0p1 - Rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuGammaIsoDR0p0To0p1, Eta, EATarget))/Pt, 2.5), 0.0);
+  fMVAVar_GammaIso_DR0p1To0p2 = TMath::Max(TMath::Min((GammaIso_DR0p1To0p2 - Rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuGammaIsoDR0p1To0p2, Eta, EATarget))/Pt, 2.5), 0.0);
+  fMVAVar_GammaIso_DR0p2To0p3 = TMath::Max(TMath::Min((GammaIso_DR0p2To0p3 - Rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuGammaIsoDR0p2To0p3, Eta, EATarget))/Pt, 2.5), 0.0);
+  fMVAVar_GammaIso_DR0p3To0p4 = TMath::Max(TMath::Min((GammaIso_DR0p3To0p4 - Rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuGammaIsoDR0p3To0p4, Eta, EATarget))/Pt, 2.5), 0.0);
+  fMVAVar_GammaIso_DR0p4To0p5 = TMath::Max(TMath::Min((GammaIso_DR0p4To0p5 - Rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuGammaIsoDR0p4To0p5, Eta, EATarget))/Pt, 2.5), 0.0);
+  fMVAVar_NeutralHadronIso_DR0p0To0p1 = TMath::Max(TMath::Min((NeutralHadronIso_DR0p0To0p1 - Rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralHadronIsoDR0p0To0p1, Eta, EATarget))/Pt, 2.5), 0.0);
+  fMVAVar_NeutralHadronIso_DR0p1To0p2 = TMath::Max(TMath::Min((NeutralHadronIso_DR0p1To0p2 - Rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralHadronIsoDR0p1To0p2, Eta, EATarget))/Pt, 2.5), 0.0);
+  fMVAVar_NeutralHadronIso_DR0p2To0p3 = TMath::Max(TMath::Min((NeutralHadronIso_DR0p2To0p3 - Rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralHadronIsoDR0p2To0p3, Eta, EATarget))/Pt, 2.5), 0.0);
+  fMVAVar_NeutralHadronIso_DR0p3To0p4 = TMath::Max(TMath::Min((NeutralHadronIso_DR0p3To0p4 - Rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralHadronIsoDR0p3To0p4, Eta, EATarget))/Pt, 2.5), 0.0);
+  fMVAVar_NeutralHadronIso_DR0p4To0p5 = TMath::Max(TMath::Min((NeutralHadronIso_DR0p4To0p5 - Rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralHadronIsoDR0p4To0p5, Eta, EATarget))/Pt, 2.5), 0.0);
+
+  // evaluate
+  Double_t mva = fTMVAReader[GetMVABin(Eta,Pt,isGlobalMuon,isTrackerMuon)]->EvaluateMVA(fMethodname);
+
+  if(fPrintMVADebug) {
+    cout << " *** Inside the class fMethodname " << fMethodname << " fMVAType " << fMVAType << endl;
+    cout  << "ChargedIso ( 0.0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 ): " 
+          << fMVAVar_ChargedIso_DR0p0To0p1   << " "
+          << fMVAVar_ChargedIso_DR0p1To0p2   << " "
+          << fMVAVar_ChargedIso_DR0p2To0p3 << " "
+          << fMVAVar_ChargedIso_DR0p3To0p4 << " "
+          << fMVAVar_ChargedIso_DR0p4To0p5 << endl;
+    cout  << "PF Gamma Iso ( 0.0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 ): " 
+          << fMVAVar_GammaIso_DR0p0To0p1 << " "
+          << fMVAVar_GammaIso_DR0p1To0p2 << " "
+          << fMVAVar_GammaIso_DR0p2To0p3 << " "
+          << fMVAVar_GammaIso_DR0p3To0p4 << " "
+          << fMVAVar_GammaIso_DR0p4To0p5 << endl;
+    cout  << "PF Neutral Hadron Iso ( 0.0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 ): " 
+          << fMVAVar_NeutralHadronIso_DR0p0To0p1 << " "
+          << fMVAVar_NeutralHadronIso_DR0p1To0p2 << " "
+          << fMVAVar_NeutralHadronIso_DR0p2To0p3 << " "
+          << fMVAVar_NeutralHadronIso_DR0p3To0p4 << " "
+          << fMVAVar_NeutralHadronIso_DR0p4To0p5 << " "
+          << endl;
+    cout << " ### MVA " << mva << endl;
+  }
+
+  return mva;
+
+}
+
 
 
 
