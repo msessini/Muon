@@ -708,29 +708,95 @@ void MuonMVAEstimator::bindVariables() {
   return;
 }
 
-
-Double_t MuonMVAEstimator::isoMvaValue(Double_t Pt,
+Double_t MuonMVAEstimator::mvaValue_ID(Double_t Pt,
                                        Double_t Eta,
                                        Bool_t isGlobalMuon,
                                        Bool_t isTrackerMuon,
-                                       Double_t Rho,
-                                       MuonEffectiveArea::MuonEffectiveAreaTarget EATarget,
-                                       Double_t ChargedIso_DR0p0To0p1,
-                                       Double_t ChargedIso_DR0p1To0p2,
-                                       Double_t ChargedIso_DR0p2To0p3,
-                                       Double_t ChargedIso_DR0p3To0p4,
-                                       Double_t ChargedIso_DR0p4To0p5,
-                                       Double_t GammaIso_DR0p0To0p1,
-                                       Double_t GammaIso_DR0p1To0p2,
-                                       Double_t GammaIso_DR0p2To0p3,
-                                       Double_t GammaIso_DR0p3To0p4,
-                                       Double_t GammaIso_DR0p4To0p5,
-                                       Double_t NeutralHadronIso_DR0p0To0p1,
-                                       Double_t NeutralHadronIso_DR0p1To0p2,
-                                       Double_t NeutralHadronIso_DR0p2To0p3,
-                                       Double_t NeutralHadronIso_DR0p3To0p4,
-                                       Double_t NeutralHadronIso_DR0p4To0p5,
+                                       Double_t MuTkNchi2,
+                                       Double_t MuGlobalNchi2,
+                                       Double_t MuNValidHits,
+                                       Double_t MuNTrackerHits,
+                                       Double_t MuNPixelHits,
+                                       Double_t MuNMatches,
+                                       Double_t MuTrkKink,
+                                       Double_t MuSegmentCompatibility,
+                                       Double_t MuCaloCompatibility,
+                                       Double_t MuHadEnergy,
+                                       Double_t MuEmEnergy,
+                                       Double_t MuHadS9Energy,
+                                       Double_t MuEmS9Energy,
                                        Bool_t printDebug) {
+
+  if (!fisInitialized) { 
+    std::cout << "Error: MuonMVAEstimator not properly initialized.\n"; 
+    return -9999;
+  }
+  
+  if (fMVAType!=kID) {
+    std::cout << "Error: id evaluation function called for a non-ID MVA\n";
+    return -9999;
+  }	
+  
+  // Spectators
+  fMVAVar_MuEta             =  Eta;
+  fMVAVar_MuPt              =  Pt;
+  
+  //set all input variables
+  fMVAVar_MuTkNchi2              = MuTkNchi2;
+  fMVAVar_MuGlobalNchi2          = MuGlobalNchi2;
+  fMVAVar_MuNValidHits           = MuNValidHits;
+  fMVAVar_MuNTrackerHits         = MuNTrackerHits;
+  fMVAVar_MuNPixelHits           = MuNPixelHits;
+  fMVAVar_MuNMatches             = MuNMatches;
+  fMVAVar_MuTrkKink              = MuTrkKink;
+  fMVAVar_MuSegmentCompatibility = MuSegmentCompatibility;
+  fMVAVar_MuCaloCompatibility    = MuCaloCompatibility;
+  fMVAVar_MuHadEnergy             = MuHadEnergy;
+  fMVAVar_MuEmEnergy       = MuEmEnergy;
+  fMVAVar_MuHadS9Energy    = MuHadS9Energy;
+  fMVAVar_MuEmS9Energy     = MuEmS9Energy;
+
+  if(printDebug) {
+    cout << fUseBinnedVersion << " -> BIN: " << Eta << " " << Pt << " "
+         << "isGlobalMuon=" << isGlobalMuon << " " 
+         << "isTrackerMuon=" << isTrackerMuon << " "
+         << " : " << GetMVABin(Eta,Pt,isGlobalMuon,isTrackerMuon) << endl;
+  }
+
+  Double_t mva = -9999; 
+   
+  if (fUseBinnedVersion) {    
+    mva = fTMVAReader[GetMVABin(Eta,Pt,isGlobalMuon,isTrackerMuon)]->EvaluateMVA(fMethodname);
+  } else {
+    mva = fTMVAReader[0]->EvaluateMVA(fMethodname);
+  }
+
+  return mva;
+
+}
+
+Double_t MuonMVAEstimator::mvaValue_Iso(Double_t Pt,
+                                        Double_t Eta,
+                                        Bool_t isGlobalMuon,
+                                        Bool_t isTrackerMuon,
+                                        Double_t Rho,
+                                        MuonEffectiveArea::MuonEffectiveAreaTarget EATarget,
+                                        Double_t ChargedIso_DR0p0To0p1,
+                                        Double_t ChargedIso_DR0p1To0p2,
+                                        Double_t ChargedIso_DR0p2To0p3,
+                                        Double_t ChargedIso_DR0p3To0p4,
+                                        Double_t ChargedIso_DR0p4To0p5,
+                                        Double_t GammaIso_DR0p0To0p1,
+                                        Double_t GammaIso_DR0p1To0p2,
+                                        Double_t GammaIso_DR0p2To0p3,
+                                        Double_t GammaIso_DR0p3To0p4,
+                                        Double_t GammaIso_DR0p4To0p5,
+                                        Double_t NeutralHadronIso_DR0p0To0p1,
+                                        Double_t NeutralHadronIso_DR0p1To0p2,
+                                        Double_t NeutralHadronIso_DR0p2To0p3,
+                                        Double_t NeutralHadronIso_DR0p3To0p4,
+                                        Double_t NeutralHadronIso_DR0p4To0p5,
+                                        Bool_t printDebug) {
 
   if (!fisInitialized) { 
     std::cout << "Error: MuonMVAEstimator not properly initialized.\n"; 
@@ -756,7 +822,7 @@ Double_t MuonMVAEstimator::isoMvaValue(Double_t Pt,
   // evaluate
   Double_t mva = fTMVAReader[GetMVABin(Eta,Pt,isGlobalMuon,isTrackerMuon)]->EvaluateMVA(fMethodname);
 
-  if(fPrintMVADebug) {
+  if(printDebug) {
     cout << " *** Inside the class fMethodname " << fMethodname << " fMVAType " << fMVAType << endl;
     cout  << "ChargedIso ( 0.0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 ): " 
           << fMVAVar_ChargedIso_DR0p0To0p1   << " "
