@@ -38,10 +38,16 @@ class MuonEffectiveArea{
     kMuGammaIso03, 
     kMuNeutralHadronIso03, 
     kMuGammaAndNeutralHadronIso03,
+    kMuGammaIso03Tight, 
+    kMuNeutralHadronIso03Tight, 
+    kMuGammaAndNeutralHadronIso03Tight,
     kMuChargedIso04, 
     kMuGammaIso04, 
     kMuNeutralHadronIso04, 
     kMuGammaAndNeutralHadronIso04,
+    kMuGammaIso04Tight, 
+    kMuNeutralHadronIso04Tight, 
+    kMuGammaAndNeutralHadronIso04Tight,
     kMuGammaIsoDR0p0To0p1,
     kMuGammaIsoDR0p1To0p2,
     kMuGammaIsoDR0p2To0p3,
@@ -91,6 +97,38 @@ class MuonEffectiveArea{
 	if (fabs(SCEta) >= 2.0 && fabs(SCEta) < 2.2 )   EffectiveArea = 0.22021;
 	if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 )   EffectiveArea = 0.34045;
 	if (fabs(SCEta) >= 2.3 )                        EffectiveArea = 0.21592;
+      }
+      if (type == kMuGammaAndNeutralHadronIso04){
+	if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 )   EffectiveArea = 0.674;
+	if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.479 ) EffectiveArea = 0.565;
+	if (fabs(SCEta) >= 1.479 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.442;
+	if (fabs(SCEta) >= 2.0 && fabs(SCEta) < 2.2 )   EffectiveArea = 0.515;
+	if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 )   EffectiveArea = 0.821;
+	if (fabs(SCEta) >= 2.3 )                        EffectiveArea = 0.660;
+      }
+      if (type == kMuGammaAndNeutralHadronIso03){
+	if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 )   EffectiveArea = 0.382;
+	if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.479 ) EffectiveArea = 0.317;
+	if (fabs(SCEta) >= 1.479 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.242;
+	if (fabs(SCEta) >= 2.0 && fabs(SCEta) < 2.2 )   EffectiveArea = 0.326;
+	if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 )   EffectiveArea = 0.462;
+	if (fabs(SCEta) >= 2.3 )                        EffectiveArea = 0.372;
+      }
+      if (type == kMuGammaAndNeutralHadronIso04Tight){
+	if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 )   EffectiveArea = 0.340;
+	if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.479 ) EffectiveArea = 0.310;
+	if (fabs(SCEta) >= 1.479 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.315;
+	if (fabs(SCEta) >= 2.0 && fabs(SCEta) < 2.2 )   EffectiveArea = 0.415;
+	if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 )   EffectiveArea = 0.658;
+	if (fabs(SCEta) >= 2.3 )                        EffectiveArea = 0.405;
+      }
+      if (type == kMuGammaAndNeutralHadronIso03Tight){
+	if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 )   EffectiveArea = 0.207;
+	if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.479 ) EffectiveArea = 0.183;
+	if (fabs(SCEta) >= 1.479 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.177;
+	if (fabs(SCEta) >= 2.0 && fabs(SCEta) < 2.2 )   EffectiveArea = 0.271;
+	if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 )   EffectiveArea = 0.348;
+	if (fabs(SCEta) >= 2.3 )                        EffectiveArea = 0.246;
       }
     }
 
