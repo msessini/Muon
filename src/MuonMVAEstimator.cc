@@ -259,7 +259,8 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
 				    double Rho,
 				    MuonEffectiveArea::MuonEffectiveAreaTarget EATarget,
 				    const reco::GsfElectronCollection &IdentifiedElectrons,
-				    const reco::MuonCollection &IdentifiedMuons) {
+				    const reco::MuonCollection &IdentifiedMuons,
+				    double dzCut) {
   
   if (!fisInitialized) { 
     std::cout << "Error: MuonMVAEstimator not properly initialized.\n"; 
@@ -379,7 +380,7 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
 	Bool_t passVeto = kTRUE;
 	//Charged
         if(iP->trackRef().isNonnull()) {	  	   
-          if (!(fabs(iP->trackRef()->dz(vertex.position()) - muonTrackZ) < 0.2)) passVeto = kFALSE;
+          if (!(fabs(iP->trackRef()->dz(vertex.position()) - muonTrackZ) < dzCut)) passVeto = kFALSE;
           //************************************************************
           // Veto any PFmuon, or PFEle
           if (iP->particleId() == reco::PFCandidate::e || iP->particleId() == reco::PFCandidate::mu) passVeto = kFALSE;

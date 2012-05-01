@@ -67,7 +67,8 @@ class MuonMVAEstimator{
                       double Rho,
                       MuonEffectiveArea::MuonEffectiveAreaTarget EATarget,
                       const reco::GsfElectronCollection &IdentifiedElectrons,
-                      const reco::MuonCollection &IdentifiedMuons);
+                      const reco::MuonCollection &IdentifiedMuons,
+		      double dzCut=0.2);
     
     // MVA value for the isoDeltaR MVA
     Double_t mvaValue(const reco::Muon& mu,
