@@ -85,6 +85,8 @@ void MuonMVAEstimator::initialize( std::string methodName,
     ExpectedNBins = 4;
   } else if (type == kID) {
     ExpectedNBins = 6;
+  } else if (type == kIsoRingsRadial) {
+    ExpectedNBins = 6;
   }
   fNMVABins = ExpectedNBins;
   
@@ -183,6 +185,29 @@ void MuonMVAEstimator::initialize( std::string methodName,
       tmpTMVAReader->AddVariable( "HadS9Energy",                  &fMVAVar_MuHadS9Energy           );      
       tmpTMVAReader->AddVariable( "EmS9Energy",                   &fMVAVar_MuEmS9Energy            );      
     }
+		if (type == kIsoRingsRadial) {
+		  tmpTMVAReader->AddVariable( "ChargedIso_DR0p0To0p1",         &fMVAVar_ChargedIso_DR0p0To0p1        );
+      tmpTMVAReader->AddVariable( "ChargedIso_DR0p1To0p2",         &fMVAVar_ChargedIso_DR0p1To0p2        );
+      tmpTMVAReader->AddVariable( "ChargedIso_DR0p2To0p3",         &fMVAVar_ChargedIso_DR0p2To0p3        );
+      tmpTMVAReader->AddVariable( "ChargedIso_DR0p3To0p4",         &fMVAVar_ChargedIso_DR0p3To0p4        );
+      tmpTMVAReader->AddVariable( "ChargedIso_DR0p4To0p5",         &fMVAVar_ChargedIso_DR0p4To0p5        );
+      tmpTMVAReader->AddVariable( "GammaIso_DR0p0To0p1",           &fMVAVar_GammaIso_DR0p0To0p1          );
+      tmpTMVAReader->AddVariable( "GammaIso_DR0p1To0p2",           &fMVAVar_GammaIso_DR0p1To0p2          );
+      tmpTMVAReader->AddVariable( "GammaIso_DR0p2To0p3",           &fMVAVar_GammaIso_DR0p2To0p3          );
+      tmpTMVAReader->AddVariable( "GammaIso_DR0p3To0p4",           &fMVAVar_GammaIso_DR0p3To0p4          );
+      tmpTMVAReader->AddVariable( "GammaIso_DR0p4To0p5",           &fMVAVar_GammaIso_DR0p4To0p5          );
+      tmpTMVAReader->AddVariable( "NeutralHadronIso_DR0p0To0p1",   &fMVAVar_NeutralHadronIso_DR0p0To0p1  );
+      tmpTMVAReader->AddVariable( "NeutralHadronIso_DR0p1To0p2",   &fMVAVar_NeutralHadronIso_DR0p1To0p2  );
+      tmpTMVAReader->AddVariable( "NeutralHadronIso_DR0p2To0p3",   &fMVAVar_NeutralHadronIso_DR0p2To0p3  );
+      tmpTMVAReader->AddVariable( "NeutralHadronIso_DR0p3To0p4",   &fMVAVar_NeutralHadronIso_DR0p3To0p4  );
+      tmpTMVAReader->AddVariable( "NeutralHadronIso_DR0p4To0p5",   &fMVAVar_NeutralHadronIso_DR0p4To0p5  );
+			
+      tmpTMVAReader->AddVariable("IsoDeltaRSum",                     &fMVAVar_MuDeltaRSum             );
+      tmpTMVAReader->AddVariable("IsoDeltaRMean",                    &fMVAVar_MuDeltaRMean            );
+      tmpTMVAReader->AddVariable("IsoDensity",                       &fMVAVar_MuDensity               );
+			
+		}
+
 		
     tmpTMVAReader->BookMVA(fMethodname , weightsfiles[i]);
     std::cout << "MVABin " << i << " : MethodName = " << fMethodname 
@@ -201,7 +226,11 @@ UInt_t MuonMVAEstimator::GetMVABin( double eta, double pt, Bool_t isGlobal, Bool
   //Default is to return the first bin
   uint bin = 0;
 
-  if (fMVAType == MuonMVAEstimator::kIsoRings) {
+  if (fMVAType == MuonMVAEstimator::kIsoRings 
+			|| fMVAType == MuonMVAEstimator::kID 
+			|| fMVAType == MuonMVAEstimator::kIDIsoRingsCombined
+			|| fMVAType == MuonMVAEstimator::kIsoRingsRadial
+			 ) {
     if (isGlobal && isTrackerMuon) {
       if (pt < 10 && fabs(eta) < 1.479)   bin = 0;
       if (pt < 10 && fabs(eta) >= 1.479)  bin = 1;
@@ -213,34 +242,7 @@ UInt_t MuonMVAEstimator::GetMVABin( double eta, double pt, Bool_t isGlobal, Bool
 			
   }
 		
-  if (fMVAType == MuonMVAEstimator::kID) {
-    if (isGlobal && isTrackerMuon) {
-      if (pt < 10 && fabs(eta) < 1.479)   bin = 0;
-      if (pt < 10 && fabs(eta) >= 1.479)  bin = 1;
-      if (pt >= 10 && fabs(eta) < 1.479)  bin = 2;
-      if (pt >= 10 && fabs(eta) >= 1.479) bin = 3;
-    }
-    else if (isTrackerMuon) 	          bin = 4;
-    else if (isGlobal) 	                  bin = 5;
-			
-  }
-
-  if (fMVAType == MuonMVAEstimator::kIDIsoRingsCombined ) {
-    bin = 0;
-    if (isGlobal && isTrackerMuon) {
-      if (pt < 10 && fabs(eta) < 1.479)   bin = 0;
-      if (pt < 10 && fabs(eta) >= 1.479)  bin = 1;
-      if (pt >= 10 && fabs(eta) < 1.479)  bin = 2;
-      if (pt >= 10 && fabs(eta) >= 1.479) bin = 3;        
-    } 
-    else if (!isGlobal && isTrackerMuon) {
-      bin = 4;
-    }
-    else {
-      cout << "Warning: Muon is not a tracker muon. Such muons are not supported. \n";
-      bin = 0;
-    }
-  }
+ 
   if (fMVAType == MuonMVAEstimator::kIsoDeltaR){
     if (pt <  20 && fabs(eta) <  1.479) bin = 0;
     if (pt <  20 && fabs(eta) >= 1.479) bin = 1;
@@ -327,6 +329,12 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
   Double_t tmpNeutralHadronIso_DR0p2To0p3  = 0;
   Double_t tmpNeutralHadronIso_DR0p3To0p4  = 0;
   Double_t tmpNeutralHadronIso_DR0p4To0p5  = 0;
+	
+	Double_t tmpMuDeltaRMean = 0;
+  Double_t tmpMuDeltaRSum = 0;
+  Double_t tmpMuDensity = 0;
+  Double_t tmpMuNPFCand = 0;
+
   
   double muonTrackZ = 0;
   if (mu.track().isNonnull()) {
@@ -413,7 +421,19 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
           if (dr >= 0.3 && dr < 0.4) tmpNeutralHadronIso_DR0p3To0p4 += iP->pt();
           if (dr >= 0.4 && dr < 0.5) tmpNeutralHadronIso_DR0p4To0p5 += iP->pt();
         }
+				
+				if (dr < 0.5) {
+			
+					tmpMuNPFCand++;
+    			tmpMuDeltaRMean += dr;
+    			tmpMuDeltaRSum  += dr;
+    			tmpMuDensity    += iP->pt() / dr;
+				}		
+				
       } //not lepton footprint
+			
+
+			
     } //in 1.0 dr cone
   } //loop over PF candidates
 
@@ -433,6 +453,13 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
   fMVAVar_NeutralHadronIso_DR0p3To0p4 = TMath::Max(TMath::Min((tmpNeutralHadronIso_DR0p3To0p4 - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralHadronIsoDR0p3To0p4, fMVAVar_MuEta, EATarget))/mu.pt(), 2.5), 0.0);
   fMVAVar_NeutralHadronIso_DR0p4To0p5 = TMath::Max(TMath::Min((tmpNeutralHadronIso_DR0p4To0p5 - rho*MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuNeutralHadronIsoDR0p4To0p5, fMVAVar_MuEta, EATarget))/mu.pt(), 2.5), 0.0);
     
+
+  fMVAVar_MuDeltaRMean      = tmpMuDeltaRMean/TMath::Max(1.0,tmpMuNPFCand);
+  fMVAVar_MuDeltaRSum       = tmpMuDeltaRSum;
+  fMVAVar_MuDensity         = tmpMuDensity;
+		
+		
+		
   if(fPrintMVADebug) {
     cout << fUseBinnedVersion << " -> BIN: " << fMVAVar_MuEta << " " << fMVAVar_MuPt << " "
          << "isGlobalMuon=" << mu.isGlobalMuon() << " " 

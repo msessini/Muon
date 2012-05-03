@@ -41,7 +41,8 @@ class MuonMVAEstimator{
       kIDIsoRingsCombined = 0,  
       kIsoRings,
       kIsoDeltaR,
-      kID
+      kID,
+			kIsoRingsRadial
     };
   
     void     initialize( std::string methodName,
