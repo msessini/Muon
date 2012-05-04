@@ -215,6 +215,58 @@ class MuonEffectiveArea{
 	if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 ) EffectiveArea = 0.051;
 	if (fabs(SCEta) >= 2.3  ) EffectiveArea = 0.114;
       }
+      /// BEGIN FROM SLIDE 11 OF  https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=188494
+      /// NOTE: to be used with the rho from ALL pf candidates within |eta|<2.5
+      if (type == kMuGammaIso03){
+	if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 ) EffectiveArea = 0.049;
+	if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.5 ) EffectiveArea = 0.030;
+	if (fabs(SCEta) >= 1.5 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.022;
+	if (fabs(SCEta) >= 2.0 && fabs(SCEta) < 2.2 ) EffectiveArea = 0.034;
+	if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 ) EffectiveArea = 0.041;
+	if (fabs(SCEta) >= 2.3 )                      EffectiveArea = 0.048;
+      }
+      if (type == kMuGammaIso04){
+	if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 ) EffectiveArea = 0.085;
+	if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.5 ) EffectiveArea = 0.052;
+	if (fabs(SCEta) >= 1.5 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.038;
+	if (fabs(SCEta) >= 2.0 && fabs(SCEta) < 2.2 ) EffectiveArea = 0.055;
+	if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 ) EffectiveArea = 0.070;
+	if (fabs(SCEta) >= 2.3 )                      EffectiveArea = 0.081;
+      }
+      if (type == kMuNeutralHadron03){
+          if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 ) EffectiveArea = 0.027;
+          if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.5 ) EffectiveArea = 0.039;
+          if (fabs(SCEta) >= 1.5 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.044;
+          if (fabs(SCEta) >= 2.0 && fabs(SCEta) < 2.2 ) EffectiveArea = 0.047;
+          if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 ) EffectiveArea = 0.055;
+          if (fabs(SCEta) >= 2.3 )                      EffectiveArea = 0.065;
+      }
+      if (type == kMuNeutralHadron04){
+          if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 ) EffectiveArea = 0.046;
+          if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.5 ) EffectiveArea = 0.067;
+          if (fabs(SCEta) >= 1.5 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.074;
+          if (fabs(SCEta) >= 2.0 && fabs(SCEta) < 2.2 ) EffectiveArea = 0.083;
+          if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 ) EffectiveArea = 0.095;
+          if (fabs(SCEta) >= 2.3 )                      EffectiveArea = 0.105;
+      }
+      if (type == kMuGammaAndNeutralHadron03){
+          if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 ) EffectiveArea = 0.076;
+          if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.5 ) EffectiveArea = 0.070;
+          if (fabs(SCEta) >= 1.5 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.067;
+          if (fabs(SCEta) >= 2.0 && fabs(SCEta) < 2.2 ) EffectiveArea = 0.082;
+          if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 ) EffectiveArea = 0.097;
+          if (fabs(SCEta) >= 2.3 )                      EffectiveArea = 0.115;
+      }
+      if (type == kMuGammaAndNeutralHadron04){
+          if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 ) EffectiveArea = 0.132;
+          if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.5 ) EffectiveArea = 0.120;
+          if (fabs(SCEta) >= 1.5 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.114;
+          if (fabs(SCEta) >= 2.0 && fabs(SCEta) < 2.2 ) EffectiveArea = 0.139;
+          if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 ) EffectiveArea = 0.168;
+          if (fabs(SCEta) >= 2.3 )                      EffectiveArea = 0.189;
+      }
+      /// END FROM SLIDE 11 OF  https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=188494
+
       if (type == kMuGammaIso05){
  	if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 ) EffectiveArea = 0.05317;
 	if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.479 ) EffectiveArea = 0.03502;
