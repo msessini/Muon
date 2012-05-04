@@ -233,7 +233,7 @@ class MuonEffectiveArea{
 	if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 ) EffectiveArea = 0.070;
 	if (fabs(SCEta) >= 2.3 )                      EffectiveArea = 0.081;
       }
-      if (type == kMuNeutralHadron03){
+      if (type == kMuNeutralHadronIso03){
           if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 ) EffectiveArea = 0.027;
           if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.5 ) EffectiveArea = 0.039;
           if (fabs(SCEta) >= 1.5 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.044;
@@ -241,7 +241,7 @@ class MuonEffectiveArea{
           if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 ) EffectiveArea = 0.055;
           if (fabs(SCEta) >= 2.3 )                      EffectiveArea = 0.065;
       }
-      if (type == kMuNeutralHadron04){
+      if (type == kMuNeutralHadronIso04){
           if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 ) EffectiveArea = 0.046;
           if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.5 ) EffectiveArea = 0.067;
           if (fabs(SCEta) >= 1.5 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.074;
@@ -249,7 +249,7 @@ class MuonEffectiveArea{
           if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 ) EffectiveArea = 0.095;
           if (fabs(SCEta) >= 2.3 )                      EffectiveArea = 0.105;
       }
-      if (type == kMuGammaAndNeutralHadron03){
+      if (type == kMuGammaAndNeutralHadronIso03){
           if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 ) EffectiveArea = 0.076;
           if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.5 ) EffectiveArea = 0.070;
           if (fabs(SCEta) >= 1.5 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.067;
@@ -257,7 +257,7 @@ class MuonEffectiveArea{
           if (fabs(SCEta) >= 2.2 && fabs(SCEta) < 2.3 ) EffectiveArea = 0.097;
           if (fabs(SCEta) >= 2.3 )                      EffectiveArea = 0.115;
       }
-      if (type == kMuGammaAndNeutralHadron04){
+      if (type == kMuGammaAndNeutralHadronIso04){
           if (fabs(SCEta) >= 0.0 && fabs(SCEta) < 1.0 ) EffectiveArea = 0.132;
           if (fabs(SCEta) >= 1.0 && fabs(SCEta) < 1.5 ) EffectiveArea = 0.120;
           if (fabs(SCEta) >= 1.5 && fabs(SCEta) < 2.0 ) EffectiveArea = 0.114;
