@@ -241,7 +241,17 @@ UInt_t MuonMVAEstimator::GetMVABin( double eta, double pt, Bool_t isGlobal, Bool
     else if (isGlobal) 	                  bin = 5;
 			
   }
-		
+
+  if ( fMVAType == MuonMVAEstimator::kIDIsoRingsCombined) {
+    if (isGlobal /*&& isTrackerMuon*/) {
+      if (pt < 10 && fabs(eta) < 1.479)   bin = 0;
+      if (pt < 10 && fabs(eta) >= 1.479)  bin = 1;
+      if (pt >= 10 && fabs(eta) < 1.479)  bin = 2;
+      if (pt >= 10 && fabs(eta) >= 1.479) bin = 3;
+    }
+    else if (isTrackerMuon)               bin = 4;
+			
+  }		
  
   if (fMVAType == MuonMVAEstimator::kIsoDeltaR){
     if (pt <  20 && fabs(eta) <  1.479) bin = 0;
@@ -660,7 +670,7 @@ Double_t MuonMVAEstimator::mvaValue(const reco::Muon& mu,
 
 Double_t MuonMVAEstimator::mvaValue_ID(const reco::Muon& mu, 
 				    const reco::Vertex& vertex) {
-  
+	
   if (!fisInitialized) { 
     std::cout << "Error: MuonMVAEstimator not properly initialized.\n"; 
     return -9999;
@@ -670,7 +680,7 @@ Double_t MuonMVAEstimator::mvaValue_ID(const reco::Muon& mu,
 		std::cout << "Error: id evaluation function called for a non-ID MVA\n";
 		return -9999;
 	}	
-  
+   
   TrackRef muTrk = mu.track();
   if (muTrk.isNull()) {
     muTrk = mu.standAloneMuon();
@@ -707,7 +717,6 @@ Double_t MuonMVAEstimator::mvaValue_ID(const reco::Muon& mu,
   fMVAVar_MuEmEnergy       = mu.calEnergy().em;
   fMVAVar_MuHadS9Energy    = mu.calEnergy().hadS9;
   fMVAVar_MuEmS9Energy     = mu.calEnergy().emS9;
-  
 
   if(fPrintMVADebug) {
     cout << fUseBinnedVersion << " -> BIN: " << fMVAVar_MuEta << " " << fMVAVar_MuPt << " "
