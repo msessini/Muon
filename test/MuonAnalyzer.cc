@@ -193,7 +193,7 @@ MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel("muons", hMuonProduct);  
   const reco::MuonCollection inMuons = *(hMuonProduct.product());  
 
-	reco::MuonCollection IdentifiedMuons;
+	reco::MuonCollection IdentifiedMuons; //this collection is empty because we already veto pf candidates of type muon
   reco::GsfElectronCollection IdentifiedElectrons;
 
   for (reco::GsfElectronCollection::const_iterator iE = inElectrons.begin(); 
@@ -232,19 +232,6 @@ MuonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
     }
     IdentifiedElectrons.push_back(*iE);
-  }
-
-  for (reco::MuonCollection::const_iterator iM = inMuons.begin(); 
-       iM != inMuons.end(); ++iM) {
-
-    if(!(iM->innerTrack().isNonnull())) {
-      continue;
-    } 
-        
-    if(!(iM->isGlobalMuon() || iM->isTrackerMuon())) continue;
-    if(iM->innerTrack()->numberOfValidHits() < 11 ) continue;
-
-    IdentifiedMuons.push_back(*iM);
   }
 
   for (reco::MuonCollection::const_iterator iM = inMuons.begin(); 

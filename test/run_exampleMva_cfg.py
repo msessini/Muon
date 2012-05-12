@@ -26,7 +26,7 @@ process.source = cms.Source(
 process.load("Configuration.EventContent.EventContent_cff")
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(2000)
+    input = cms.untracked.int32(1000)
     )
 
 #my analyzer
